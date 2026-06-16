@@ -30,7 +30,7 @@ MCP server שמחבר את Cursor ישירות ל-Phenom Angular Design System.
 ### דרישות מוקדמות
 - Node.js 18+
 - Cursor
-- Clone מקומי של ריפו `phenom-ds`
+- Clone מקומי של ריפו `phenom-ds` https://bitbucket.org/phenompeople/phenom-ds/src/main/
 
 ### צעד 1 — Clone
 
