@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "phenom-angular": {
+      "command": "node",
+      "args": ["/Users/shlomi/Documents/Cursor/phenom-angular-mcp/dist/index.js"],
+      "env": {
+        "REPO_PATH": "/Users/shlomi/Documents/Cursor/Phenom DS/phenom-ds",
+        "STORYBOOK_URL": "https://pds.phenom.com/angular"
+      }
+    },
+    "storybook-mcp": {
+      "command": "npx",
+      "args": ["-y", "@raksbisht/storybook-mcp"],
+      "env": {
+        "STORYBOOK_URL": "https://pds.phenom.com/angular"
+      }
+    }
+  }
+}

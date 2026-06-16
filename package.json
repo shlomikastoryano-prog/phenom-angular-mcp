@@ -1,0 +1,21 @@
+{
+  "name": "phenom-angular-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for Phenom Angular Design System",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "ts-morph": "^24.0.0",
+    "glob": "^11.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0"
+  }
+}
