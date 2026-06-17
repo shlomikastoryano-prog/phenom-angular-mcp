@@ -35,7 +35,7 @@ MCP server שמחבר את Cursor ישירות ל-Phenom Angular Design System.
 ### צעד 1 — Clone
 
 ```bash
-git clone git@github.com:shlomikastoryano-prog/phenom-angular-mcp.git
+git clone https://github.com/shlomikastoryano-prog/phenom-angular-mcp.git
 cd phenom-angular-mcp
 ```
 
