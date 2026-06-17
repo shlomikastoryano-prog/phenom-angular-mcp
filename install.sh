@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# ─────────────────────────────────────────────
-#  Phenom Angular MCP — Team Install Script
-# ─────────────────────────────────────────────
-
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -17,21 +13,14 @@ echo -e "${CYAN}║     Phenom Angular MCP — Installer       ║${NC}"
 echo -e "${CYAN}╚══════════════════════════════════════════╝${NC}"
 echo ""
 
-# ── 1. Find where this script lives (the MCP server source) ────────────────
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Install in-place (where the repo was cloned)
+INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# ── 2. Ask for the install location ────────────────────────────────────────
-DEFAULT_INSTALL="$HOME/Documents/Cursor/phenom-angular-mcp"
-echo -e "${YELLOW}Where should the MCP server be installed?${NC}"
-echo -e "  Press Enter for default: ${DEFAULT_INSTALL}"
-read -r INSTALL_DIR
-INSTALL_DIR="${INSTALL_DIR:-$DEFAULT_INSTALL}"
+# ── Ask for the DS repo path ────────────────────────────────────────────────
 
-# ── 3. Ask for the Phenom DS repo path ─────────────────────────────────────
-
-# Try to auto-detect common locations
 CANDIDATE_PATHS=(
   "$HOME/Documents/Cursor/Phenom DS/phenom-ds"
+  "$HOME/Documents/Cursor/Design system/phenom-ds"
   "$HOME/phenom/angular-ds"
   "$HOME/code/phenom-ds"
   "$HOME/Documents/phenom-ds"
@@ -45,89 +34,78 @@ for p in "${CANDIDATE_PATHS[@]}"; do
   fi
 done
 
-echo ""
-echo -e "${YELLOW}Path to your local Phenom Angular DS repo?${NC}"
 if [ -n "$AUTO_DETECTED" ]; then
-  echo -e "  Auto-detected: ${GREEN}${AUTO_DETECTED}${NC}"
-  echo -e "  Press Enter to use it, or type a different path:"
+  echo -e "${YELLOW}Found your Phenom DS repo at:${NC}"
+  echo -e "  ${GREEN}${AUTO_DETECTED}${NC}"
+  echo -e "${YELLOW}Press Enter to confirm, or type a different path:${NC}"
   read -r DS_PATH
   DS_PATH="${DS_PATH:-$AUTO_DETECTED}"
 else
-  echo -e "  Example: /Users/yourname/code/phenom-ds"
+  echo -e "${YELLOW}Where is your local phenom-ds repo?${NC}"
+  echo -e "  Example: /Users/yourname/Documents/phenom-ds"
   read -r DS_PATH
   while [ ! -d "$DS_PATH" ]; do
-    echo -e "${RED}  Directory not found. Try again:${NC}"
+    echo -e "${RED}  Not found. Try again:${NC}"
     read -r DS_PATH
   done
 fi
 
-echo ""
-echo -e "  ${GREEN}✓${NC} DS repo: ${DS_PATH}"
-echo -e "  ${GREEN}✓${NC} Install dir: ${INSTALL_DIR}"
-echo ""
-
-# ── 4. Copy/update the server files ────────────────────────────────────────
-echo -e "${CYAN}→ Setting up MCP server...${NC}"
-
-if [ "$SCRIPT_DIR" != "$INSTALL_DIR" ]; then
-  mkdir -p "$INSTALL_DIR"
-  cp -r "$SCRIPT_DIR/." "$INSTALL_DIR/"
+# Guard: prevent installing INTO the DS repo
+if [[ "$INSTALL_DIR" == "$DS_PATH"* ]] || [[ "$DS_PATH" == "$INSTALL_DIR"* ]]; then
+  echo -e "${RED}Error: Install dir and DS repo path overlap. Make sure you cloned phenom-angular-mcp to a separate folder.${NC}"
+  exit 1
 fi
 
-cd "$INSTALL_DIR"
+echo ""
+echo -e "  ${GREEN}✓${NC} DS repo:     ${DS_PATH}"
+echo -e "  ${GREEN}✓${NC} MCP server:  ${INSTALL_DIR}"
+echo ""
 
-# ── 5. Install & build ──────────────────────────────────────────────────────
+# ── Install & build ─────────────────────────────────────────────────────────
 echo -e "${CYAN}→ Installing dependencies...${NC}"
+cd "$INSTALL_DIR"
 npm install --silent
 
 echo -e "${CYAN}→ Building...${NC}"
 npm run build
-
 echo -e "${GREEN}✓ Build successful${NC}"
 echo ""
 
-# ── 6. Merge into ~/.cursor/mcp.json ───────────────────────────────────────
+# ── Merge into ~/.cursor/mcp.json ───────────────────────────────────────────
 CURSOR_MCP="$HOME/.cursor/mcp.json"
 STORYBOOK_URL="https://pds.phenom.com/angular"
 SERVER_PATH="${INSTALL_DIR}/dist/index.js"
 
-NEW_SERVERS=$(python3 - <<EOF
-import json
+echo -e "${CYAN}→ Updating ~/.cursor/mcp.json...${NC}"
 
-new = {
+python3 - "$DS_PATH" "$SERVER_PATH" "$STORYBOOK_URL" "$CURSOR_MCP" <<'PYEOF'
+import json, os, sys
+
+ds_path, server_path, storybook_url, cursor_mcp = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+
+new_servers = {
   "phenom-angular": {
     "command": "node",
-    "args": ["${SERVER_PATH}"],
+    "args": [server_path],
     "env": {
-      "REPO_PATH": "${DS_PATH}",
-      "STORYBOOK_URL": "${STORYBOOK_URL}"
+      "REPO_PATH": ds_path,
+      "STORYBOOK_URL": storybook_url
     }
   },
   "storybook-mcp": {
     "command": "npx",
     "args": ["-y", "@raksbisht/storybook-mcp"],
     "env": {
-      "STORYBOOK_URL": "${STORYBOOK_URL}"
+      "STORYBOOK_URL": storybook_url
     }
   }
 }
-
-print(json.dumps(new, indent=2))
-EOF
-)
-
-echo -e "${CYAN}→ Updating ~/.cursor/mcp.json...${NC}"
-
-python3 - <<EOF
-import json, os, sys
-
-cursor_mcp = os.path.expanduser("~/.cursor/mcp.json")
-new_servers = json.loads("""${NEW_SERVERS}""")
 
 if os.path.exists(cursor_mcp):
     with open(cursor_mcp, "r") as f:
         config = json.load(f)
 else:
+    os.makedirs(os.path.dirname(cursor_mcp), exist_ok=True)
     config = {}
 
 if "mcpServers" not in config:
@@ -139,7 +117,7 @@ with open(cursor_mcp, "w") as f:
     json.dump(config, f, indent=2)
 
 print("Done")
-EOF
+PYEOF
 
 echo ""
 echo -e "${GREEN}╔══════════════════════════════════════════╗${NC}"
