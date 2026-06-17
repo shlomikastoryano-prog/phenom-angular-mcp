@@ -61,6 +61,11 @@ echo -e "  ${GREEN}✓${NC} DS repo:     ${DS_PATH}"
 echo -e "  ${GREEN}✓${NC} MCP server:  ${INSTALL_DIR}"
 echo ""
 
+# ── Detect npx path (handles nvm, homebrew, etc.) ───────────────────────────
+NPX_PATH=$(which npx 2>/dev/null || echo "npx")
+echo -e "  ${GREEN}✓${NC} npx:          ${NPX_PATH}"
+echo ""
+
 # ── Install & build ─────────────────────────────────────────────────────────
 echo -e "${CYAN}→ Installing dependencies...${NC}"
 cd "$INSTALL_DIR"
@@ -78,10 +83,10 @@ SERVER_PATH="${INSTALL_DIR}/dist/index.js"
 
 echo -e "${CYAN}→ Updating ~/.cursor/mcp.json...${NC}"
 
-python3 - "$DS_PATH" "$SERVER_PATH" "$STORYBOOK_URL" "$CURSOR_MCP" <<'PYEOF'
+python3 - "$DS_PATH" "$SERVER_PATH" "$STORYBOOK_URL" "$CURSOR_MCP" "$NPX_PATH" <<'PYEOF'
 import json, os, sys
 
-ds_path, server_path, storybook_url, cursor_mcp = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+ds_path, server_path, storybook_url, cursor_mcp, npx_path = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
 
 new_servers = {
   "phenom-angular": {
@@ -93,7 +98,7 @@ new_servers = {
     }
   },
   "storybook-mcp": {
-    "command": "npx",
+    "command": npx_path,
     "args": ["-y", "@raksbisht/storybook-mcp"],
     "env": {
       "STORYBOOK_URL": storybook_url
