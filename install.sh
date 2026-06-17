@@ -16,8 +16,12 @@ echo ""
 # Install in-place (where the repo was cloned)
 INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# ── Ask for the DS repo path ────────────────────────────────────────────────
+# ── Detect node/npm paths (handles nvm, homebrew, etc.) ─────────────────────
+NODE_BIN=$(dirname "$(which node 2>/dev/null || echo "node")")
+NPM_PATH="$NODE_BIN/npm"
+NODE_PATH="$NODE_BIN/node"
 
+# ── Ask for the DS repo path ─────────────────────────────────────────────────
 CANDIDATE_PATHS=(
   "$HOME/Documents/Cursor/Phenom DS/phenom-ds"
   "$HOME/Documents/Cursor/Design system/phenom-ds"
@@ -52,28 +56,31 @@ fi
 
 # Guard: prevent installing INTO the DS repo
 if [[ "$INSTALL_DIR" == "$DS_PATH"* ]] || [[ "$DS_PATH" == "$INSTALL_DIR"* ]]; then
-  echo -e "${RED}Error: Install dir and DS repo path overlap. Make sure you cloned phenom-angular-mcp to a separate folder.${NC}"
+  echo -e "${RED}Error: Install dir and DS repo path overlap.${NC}"
   exit 1
 fi
 
 echo ""
-echo -e "  ${GREEN}✓${NC} DS repo:     ${DS_PATH}"
-echo -e "  ${GREEN}✓${NC} MCP server:  ${INSTALL_DIR}"
+echo -e "  ${GREEN}✓${NC} DS repo:    ${DS_PATH}"
+echo -e "  ${GREEN}✓${NC} MCP server: ${INSTALL_DIR}"
+echo -e "  ${GREEN}✓${NC} node:       ${NODE_PATH}"
 echo ""
 
-# ── Detect npx path (handles nvm, homebrew, etc.) ───────────────────────────
-NPX_PATH=$(which npx 2>/dev/null || echo "npx")
-echo -e "  ${GREEN}✓${NC} npx:          ${NPX_PATH}"
-echo ""
-
-# ── Install & build ─────────────────────────────────────────────────────────
+# ── Install & build phenom-angular ──────────────────────────────────────────
 echo -e "${CYAN}→ Installing dependencies...${NC}"
 cd "$INSTALL_DIR"
-npm install --silent
+"$NPM_PATH" install --silent
 
 echo -e "${CYAN}→ Building...${NC}"
-npm run build
+"$NPM_PATH" run build
 echo -e "${GREEN}✓ Build successful${NC}"
+echo ""
+
+# ── Install @raksbisht/storybook-mcp globally ───────────────────────────────
+echo -e "${CYAN}→ Installing storybook-mcp globally...${NC}"
+"$NPM_PATH" install -g @raksbisht/storybook-mcp --silent
+STORYBOOK_MCP_BIN="$NODE_BIN/storybook-mcp"
+echo -e "${GREEN}✓ storybook-mcp installed at ${STORYBOOK_MCP_BIN}${NC}"
 echo ""
 
 # ── Merge into ~/.cursor/mcp.json ───────────────────────────────────────────
@@ -83,14 +90,15 @@ SERVER_PATH="${INSTALL_DIR}/dist/index.js"
 
 echo -e "${CYAN}→ Updating ~/.cursor/mcp.json...${NC}"
 
-python3 - "$DS_PATH" "$SERVER_PATH" "$STORYBOOK_URL" "$CURSOR_MCP" "$NPX_PATH" <<'PYEOF'
+python3 - "$DS_PATH" "$SERVER_PATH" "$STORYBOOK_URL" "$CURSOR_MCP" "$NODE_PATH" "$STORYBOOK_MCP_BIN" <<'PYEOF'
 import json, os, sys
 
-ds_path, server_path, storybook_url, cursor_mcp, npx_path = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
+ds_path, server_path, storybook_url, cursor_mcp, node_path, storybook_mcp_bin = \
+  sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]
 
 new_servers = {
   "phenom-angular": {
-    "command": "node",
+    "command": node_path,
     "args": [server_path],
     "env": {
       "REPO_PATH": ds_path,
@@ -98,8 +106,8 @@ new_servers = {
     }
   },
   "storybook-mcp": {
-    "command": npx_path,
-    "args": ["-y", "@raksbisht/storybook-mcp"],
+    "command": node_path,
+    "args": [storybook_mcp_bin],
     "env": {
       "STORYBOOK_URL": storybook_url
     }
