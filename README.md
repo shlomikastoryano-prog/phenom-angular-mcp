@@ -53,6 +53,7 @@ bash install.sh
 1. **איפה להתקין את השרת** — לחץ Enter לברירת מחדל (`~/Documents/Cursor/phenom-angular-mcp`)
 2. **נתיב לריפו phenom-ds שלך** — ינסה לזהות אוטומטית, אחרת תכניס ידנית
 3. תלחץ Enter
+
 הסקריפט יעשה הכל בעצמו: `npm install`, `build`, ועדכון `~/.cursor/mcp.json`.
 
 ### צעד 3 — Restart Cursor
