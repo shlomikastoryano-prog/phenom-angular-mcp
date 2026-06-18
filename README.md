@@ -67,11 +67,12 @@ bash install.sh
 ```
 
 The script will try auto-detect your `phenom-ds` repo path — just press Enter to confirm.
+
 or
+
 The script will ask you:
-1. **Where to install the server** — Press Enter for default (`~/Documents/Cursor/phenom-angular-mcp`)
-2. **Path to your phenom-ds repo** — will try to detect automatically, otherwise enter manually
-3. Press Enter
+1. **Where to install the server** — Enter the repo path (`~/Documents/Cursor/phenom-angular-mcp`)
+2. Press Enter
 
 ### Step 3 — Restart Cursor
 
