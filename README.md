@@ -66,10 +66,12 @@ cd phenom-angular-mcp
 bash install.sh
 ```
 
-The script will auto-detect your `phenom-ds` repo path — just press Enter to confirm.
-
-> **nvm users:** make sure you're on Node 18+ before running:
-> `nvm use 18` (or `nvm alias default 18` to make it permanent)
+The script will try auto-detect your `phenom-ds` repo path — just press Enter to confirm.
+or
+The script will ask you:
+1. **Where to install the server** — Press Enter for default (`~/Documents/Cursor/phenom-angular-mcp`)
+2. **Path to your phenom-ds repo** — will try to detect automatically, otherwise enter manually
+3. Press Enter
 
 ### Step 3 — Restart Cursor
 
