@@ -1,27 +1,24 @@
-# Phenom Angular MCP
-
+Phenom Angular MCP
 MCP server שמחבר את Cursor ישירות ל-Phenom Angular Design System.
-
 עם ה-MCP הזה Cursor יכול לענות על שאלות כמו:
-- _"מה כל ה-@Input() props של הbutton?"_
-- _"תראה לי את ה-HTML template של phenom-input"_
-- _"איך משתמשים בcomponent X? תביא דוגמה מה-stories"_
 
----
+"מה כל ה-@Input() props של הbutton?"
+"תראה לי את ה-HTML template של phenom-input"
+"איך משתמשים בcomponent X? תביא דוגמה מה-stories"
 
-## מה כלול
 
-| כלי | מה הוא עושה |
-|---|---|
-| `list_components` | כל הcomponents בDS |
-| `search_components` | חיפוש לפי שם או selector |
-| `get_component_source` | קוד מקור מלא — TS + HTML + SCSS |
-| `get_component_inputs` | כל ה-`@Input()` עם טיפוסים וdefaults |
-| `get_component_outputs` | כל ה-`@Output()` EventEmitters |
-| `get_story_code` | קובץ ה-`.stories.ts` |
-| `get_storybook_index` | רשימת stories חיה מ-pds.phenom.com |
+שני MCP שמשלימים זה את זה
+phenom-angular — קורא מהריפו המקומי
+עובד ישירות מול קוד המקור. לא תלוי באינטרנט.
+כלימה הוא עושהlist_componentsכל הcomponents בDSsearch_componentsחיפוש לפי שם או selectorget_component_sourceקוד מקור מלא — TS + HTML + SCSSget_component_inputsכל ה-@Input() עם טיפוסים, defaults ותיאוריםget_component_outputsכל ה-@Output() EventEmittersget_story_codeקובץ ה-.stories.ts המלאget_storybook_indexרשימת stories חיה מ-pds.phenom.com
+storybook-mcp — קורא מ-pds.phenom.com/angular
+עובד מול ה-Storybook הציבורי. מביא את מה שהמשתמשים רואים באתר.
+כלימה הוא עושהconnectמתחבר ל-Storybook ומוודא חיבורlistרשימת כל הcomponents והstoriessearchחיפוש לפי שם או נתיבget_docsדוקומנטציה מרונדרת — props, code examples, תיאוריםscreenshotצילום מסך של קומפוננטה
+למה שניהם?
+phenom-angular יודע איך הקומפוננטה בנויה — קוד מקור, TypeScript, templates.
 
-בנוסף — `storybook-mcp` מתחבר ל-[pds.phenom.com/angular](https://pds.phenom.com/angular) ומאפשר docs, חיפוש וscreenshots.
+storybook-mcp יודע איך להשתמש בקומפוננטה — דוקומנטציה, דוגמאות, ויזואליזציה.
+יחד: Cursor יכול לענות על "מה ה-@Input() של הbutton?" וגם "תראה לי דוגמה איך להשתמש בו".
 
 ---
 
