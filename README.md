@@ -1,68 +1,82 @@
-Phenom Angular MCP
-MCP server שמחבר את Cursor ישירות ל-Phenom Angular Design System.
-עם ה-MCP הזה Cursor יכול לענות על שאלות כמו:
+# Phenom Angular MCP
 
-"מה כל ה-@Input() props של הbutton?"
-"תראה לי את ה-HTML template של phenom-input"
-"איך משתמשים בcomponent X? תביא דוגמה מה-stories"
+MCP server that connects Cursor directly to the Phenom Angular Design System.
 
-
-שני MCP שמשלימים זה את זה
-phenom-angular — קורא מהריפו המקומי
-עובד ישירות מול קוד המקור. לא תלוי באינטרנט.
-כלימה הוא עושהlist_componentsכל הcomponents בDSsearch_componentsחיפוש לפי שם או selectorget_component_sourceקוד מקור מלא — TS + HTML + SCSSget_component_inputsכל ה-@Input() עם טיפוסים, defaults ותיאוריםget_component_outputsכל ה-@Output() EventEmittersget_story_codeקובץ ה-.stories.ts המלאget_storybook_indexרשימת stories חיה מ-pds.phenom.com
-storybook-mcp — קורא מ-pds.phenom.com/angular
-עובד מול ה-Storybook הציבורי. מביא את מה שהמשתמשים רואים באתר.
-כלימה הוא עושהconnectמתחבר ל-Storybook ומוודא חיבורlistרשימת כל הcomponents והstoriessearchחיפוש לפי שם או נתיבget_docsדוקומנטציה מרונדרת — props, code examples, תיאוריםscreenshotצילום מסך של קומפוננטה
-למה שניהם?
-phenom-angular יודע איך הקומפוננטה בנויה — קוד מקור, TypeScript, templates.
-
-storybook-mcp יודע איך להשתמש בקומפוננטה — דוקומנטציה, דוגמאות, ויזואליזציה.
-יחד: Cursor יכול לענות על "מה ה-@Input() של הbutton?" וגם "תראה לי דוגמה איך להשתמש בו".
+Ask Cursor things like:
+- *"What are all the @Input() props of the button component?"*
+- *"Show me the HTML template for phenom-input"*
+- *"How do I use component X? Show me a story example"*
 
 ---
 
-## התקנה
+## Two MCPs that complement each other
 
-### דרישות מוקדמות
+### phenom-angular — reads from your local repo
+Works directly against source code. No internet required.
+
+| Tool | Description |
+|---|---|
+| `list_components` | All components in the DS |
+| `search_components` | Search by name or selector |
+| `get_component_source` | Full source — TS + HTML + SCSS |
+| `get_component_inputs` | All `@Input()` props with types, defaults, descriptions |
+| `get_component_outputs` | All `@Output()` EventEmitters |
+| `get_story_code` | The full `.stories.ts` file |
+| `get_storybook_index` | Live story list from pds.phenom.com |
+
+### storybook-mcp — reads from pds.phenom.com/angular
+Works against the live public Storybook. Returns what users see on the site.
+
+| Tool | Description |
+|---|---|
+| `connect` | Connect to Storybook and verify connection |
+| `list` | All components and stories |
+| `search` | Search by name or path |
+| `get_docs` | Rendered docs — props, code examples, descriptions |
+| `screenshot` | Screenshot of a rendered component |
+
+### Why both?
+
+`phenom-angular` knows **how the component is built** — source code, TypeScript, templates.  
+`storybook-mcp` knows **how to use the component** — documentation, examples, visuals.
+
+Together: Cursor can answer both *"what are the @Input() props?"* and *"show me a usage example"*.
+
+---
+
+## Installation
+
+### Requirements
 - Node.js 18+
 - Cursor
-- Clone מקומי של ריפו `phenom-ds` https://bitbucket.org/phenompeople/phenom-ds/src/main/
+- Local clone of [phenom-ds](https://bitbucket.org/phenompeople/phenom-ds/src/main/)
 
-### צעד 1 — Clone
+### Step 1 — Clone
 
 ```bash
 git clone https://github.com/shlomikastoryano-prog/phenom-angular-mcp.git
-```
-```bash
 cd phenom-angular-mcp
 ```
 
-
-
-### צעד 2 — הרץ את סקריפט ההתקנה
+### Step 2 — Run the install script
 
 ```bash
 bash install.sh
 ```
 
-הסקריפט ישאל אותך:
-1. **איפה להתקין את השרת** — לחץ Enter לברירת מחדל (`~/Documents/Cursor/phenom-angular-mcp`)
-2. **נתיב לריפו phenom-ds שלך** — ינסה לזהות אוטומטית, אחרת תכניס ידנית
-3. תלחץ Enter
+The script will auto-detect your `phenom-ds` repo path — just press Enter to confirm.
 
-הסקריפט יעשה הכל בעצמו: `npm install`, `build`, ועדכון `~/.cursor/mcp.json`.
+> **nvm users:** make sure you're on Node 18+ before running:
+> `nvm use 18` (or `nvm alias default 18` to make it permanent)
 
-### צעד 3 — Restart Cursor
+### Step 3 — Restart Cursor
 
-פתח מחדש את Cursor ולך ל-**Settings → MCP**.
-
-אמורים להופיע:
+Open Cursor → **Settings → MCP**. You should see:
 - ✅ `phenom-angular`
 - ✅ `storybook-mcp`
 
 ---
 
-## שאלות?
+## Questions?
 
-פנה ל-Shlomi Kastoryano
+Contact Shlomi Kastoryano
