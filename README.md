@@ -49,12 +49,14 @@ Together: Cursor can answer both *"what are the @Input() props?"* and *"show me 
 ### Requirements
 - Node.js 18+
 - Cursor
-- Local clone of [phenom-ds](https://bitbucket.org/phenompeople/phenom-ds/src/main/)
+- Local clone of https://bitbucket.org/phenompeople/phenom-ds/src/main/
 
 ### Step 1 — Clone
 
 ```bash
 git clone https://github.com/shlomikastoryano-prog/phenom-angular-mcp.git
+```
+```bash
 cd phenom-angular-mcp
 ```
 
