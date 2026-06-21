@@ -83,7 +83,7 @@ Open Cursor → **Settings → MCP**. You should see:
 ---
 
 ## Video 
-<video src="https://github.com/shlomikastoryano-prog/phenom-angular-mcp/blob/main/Angular%20MCP%20installation.mp4" controls width="100%"></video>
+[<video src="https://github.com/shlomikastoryano-prog/phenom-angular-mcp/blob/main/Angular%20MCP%20installation.mp4" controls width="100%"></video>](https://drive.google.com/file/d/1vkFX_JVqQQ-c0M7_h5edCt51YtQEojS7/view?usp=sharing)
 
 
 ## Questions?
